@@ -229,9 +229,9 @@ app.get('/api/stats', async (req, res) => {
     const { rows } = await pool.query(`
       SELECT 
         COUNT(*) as total_products,
-        SUM(quantity) as total_items,
+        COALESCE(SUM(quantity), 0) as total_items,
         COUNT(DISTINCT category) as categories,
-        SUM(quantity * price) as total_value
+        COALESCE(SUM(quantity * price), 0) as total_value
       FROM products
     `);
     res.json(rows[0]);
