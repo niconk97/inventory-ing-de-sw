@@ -234,7 +234,16 @@ app.get('/api/stats', async (req, res) => {
         COALESCE(SUM(quantity * price), 0) as total_value
       FROM products
     `);
-    res.json(rows[0]);
+    
+    // Forzar conversión a números para evitar errores de .toFixed()
+    const stats = {
+      total_products: parseInt(rows[0].total_products) || 0,
+      total_items: parseInt(rows[0].total_items) || 0,
+      categories: parseInt(rows[0].categories) || 0,
+      total_value: parseFloat(rows[0].total_value) || 0
+    };
+    
+    res.json(stats);
   } catch (error) {
     console.error('Error fetching stats:', error);
     res.status(500).json({ error: error.message });
